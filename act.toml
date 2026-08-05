@@ -1,0 +1,13 @@
+[std]
+name = "sed"
+
+[std.capabilities."wasi:filesystem"]
+description = """
+Scratch space for text transforms, plus read/write access to any file paths \
+passed to `sed_files`. Path scope is delegated to the host policy: the `sed` \
+tool only needs a writable scratch directory (default /tmp), while `sed_files` \
+needs access to the files it is asked to edit."""
+
+[[std.capabilities."wasi:filesystem".allow]]
+path = "**"
+mode = "rw"

@@ -1,0 +1,28 @@
+[package]
+name = "component-sed"
+description = "Stream editor (sed) for filtering and transforming text"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+keywords = ["act", "sed", "wasm", "component", "text"]
+
+[dependencies]
+act-sdk = "0.12"
+wit-bindgen = { version = "0.58", features = ["async-spawn"] }
+serde = { version = "1", features = ["derive"] }
+schemars = "1"
+tempfile = "3"
+
+# Pinned to a git revision rather than the crates.io release: the published
+# `sed 0.1.1` is materially behind, and a pinned rev keeps builds reproducible.
+sed = { git = "https://github.com/uutils/sed", rev = "36a1cf49547f5134ccd296fa3c5d3d3675ccc5e4" }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true
+opt-level = "z"
+panic = "abort"
+
+[lib]
+crate-type = ["cdylib"]
