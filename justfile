@@ -5,12 +5,6 @@ component_ref := env("OCI_REF", "actpkg.dev/library/sed")
 
 act := env("ACT", "npx @actcore/act")
 actbuild := env("ACT_BUILD", "npx @actcore/act-build")
-hurl := env("HURL", "hurl")
-# Random port for the e2e server, in a safe range: above the well-known/common
-# dev ports and below the Linux outbound ephemeral range (32768+).
-port := `shuf -i 10000-29999 -n 1`
-addr := "[::1]:" + port
-baseurl := "http://" + addr
 
 # Fetch WIT deps from the registry (ghcr.io/actcore) into wit/deps/.
 # wkg-registry.toml maps the act namespace -> actcore.dev (well-known -> ghcr.io/actcore).
@@ -34,14 +28,7 @@ pack:
     {{actbuild}} pack {{wasm}}
 
 test: build
-    #!/usr/bin/env bash
-    set -euo pipefail
-    TEST_DIR=$(mktemp -d)
-    GRANT="{\"wasi:filesystem\":{\"mode\":\"allowlist\",\"allow\":[{\"path\":\"$TEST_DIR\",\"mode\":\"rw\"}]}}"
-    {{act}} run {{wasm}} --http --listen "{{addr}}" --grant "$GRANT" &
-    trap "kill $!; rm -rf $TEST_DIR" EXIT
-    curl --retry 60 --retry-connrefused --retry-delay 1 -fsS -o /dev/null {{baseurl}}/info
-    {{hurl}} --test --variable "baseurl={{baseurl}}" --variable "test_dir=$TEST_DIR" e2e/*.hurl
+    ACT="{{act}}" uv run --project e2e pytest e2e/ -v
 
 publish: build
     #!/usr/bin/env bash
