@@ -7,6 +7,6 @@ name = "act:tools"
 registry = "actcore.dev"
 
 [[packages.versions]]
-requirement = "=0.1.0"
-version = "0.1.0"
-digest = "sha256:e10152e2563ef6759da98e3230a249c5c88b2a9877a6730a2590f2d48d94e9dd"
+requirement = "=0.2.0"
+version = "0.2.0"
+digest = "sha256:c5ea8a362f19acbf09db07b866cae2e650725ce3977d72f18ed1f78de702ba04"
